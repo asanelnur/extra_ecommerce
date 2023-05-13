@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
 
-class MyUserManager(BaseUserManager):
+class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None):
         """
         Creates and saves a User with the given email and password.
@@ -36,6 +36,9 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def active(self):
+        return self.filter(is_active=True)
+
 
 class CustomUser(AbstractUser):
     username = None
@@ -45,4 +48,4 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    objects = MyUserManager()
+    objects = CustomUserManager()

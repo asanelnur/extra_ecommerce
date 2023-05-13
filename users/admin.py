@@ -8,11 +8,11 @@ from users import models
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ["email", 'is_superuser']
+    list_display = ["email", 'is_superuser', 'is_staff']
     list_editable = ["is_superuser"]
-    fieldsets = [
-        (None, {"fields": ["email", "password", 'first_name', 'date_joined']}),
-    ]
+    # fieldsets = [
+    #     (None, {"fields": ["email", "password", 'first_name', 'date_joined']}),
+    # ]
     search_fields = ["email"]
     ordering = ["email"]
 

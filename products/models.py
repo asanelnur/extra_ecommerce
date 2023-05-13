@@ -1,7 +1,11 @@
 import uuid
 
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from ecommerce import settings
+
 
 # Create your models here.
 
@@ -14,6 +18,7 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True, verbose_name=_('Is active?'))
     is_top = models.BooleanField(default=False, verbose_name=_('Is top?'))
     data = models.JSONField(default=dict, verbose_name=_('Data'))
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

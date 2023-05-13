@@ -1,11 +1,18 @@
 from typing import Protocol, OrderedDict
 
+from rest_framework_simplejwt import tokens
+
 from users import models, repos
 
 
 class UserServicesInterface(Protocol):
 
     def create_user(self, data: OrderedDict) -> None: ...
+
+    def get_user(self, data: OrderedDict) -> None: ...
+
+    def create_token(self, data: OrderedDict) -> dict: ...
+
 
 
 class UserServicesV1:
@@ -18,4 +25,16 @@ class UserServicesV1:
     @staticmethod
     def _send_letter_to_email(email: str) -> None:
         print(f'send letter to {email}')
+
+    def create_token(self, data: OrderedDict) -> dict:
+        user = self.user_repos.get_user(data=data)
+
+        access = tokens.AccessToken.for_user(user=user)
+        refresh = tokens.RefreshToken.for_user(user=user)
+
+        return {
+            'refresh': str(refresh),
+            'access': str(access),
+        }
+
 
