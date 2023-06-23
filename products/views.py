@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.db.models import Min, Q, Count
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS, AllowAny
 
@@ -13,9 +13,11 @@ class ProductViewSet(mixins.ActionSerializerMixin, viewsets.ModelViewSet):
     ACTION_SERIALIZERS = {
         'retrieve': serializers.RetrieveProductSerializer,
     }
-    queryset = models.Product.objects.all()
+    queryset = models.Product.objects.annotate(
+        min_amount=Min('seller_products__amount', filter=Q(seller_products__is_active=True)),
+    )
     serializer_class = serializers.ProductSerializer
-    permission_classes = (IsMe,)
+    # permission_classes = (IsMe,)
 
     # def get_permissions(self):
     #     if self.action in SAFE_METHODS:

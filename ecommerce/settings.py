@@ -45,9 +45,12 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'drf_yasg',
+
 
     'products',
     'users',
+    'seller_products',
 
 ]
 
