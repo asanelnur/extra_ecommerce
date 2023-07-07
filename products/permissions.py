@@ -2,16 +2,12 @@ from rest_framework.permissions import DjangoObjectPermissions, SAFE_METHODS
 from . import models
 
 
-class IsMe(DjangoObjectPermissions):
+class IsAdminOrReadOnly(DjangoObjectPermissions):
     def has_permission(self, request, view):
         return bool(
+            request.method in SAFE_METHODS or
             request.user
             and request.user.is_authenticated
-            and request.user.email == 'asd@gmail.com'
+            and request.user.is_staff
         )
-
-    def has_object_permission(self, request, view, obj: models.Product):
-        if request.method in SAFE_METHODS:
-            return True
-        return obj.user == request.user
 

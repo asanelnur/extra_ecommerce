@@ -2,8 +2,8 @@ from django.db.models import Min, Q, Count
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS, AllowAny
 
-from products import models, serializers
-from products.permissions import IsMe
+from products import models, serializers, services
+from products.permissions import IsAdminOrReadOnly
 from utils import mixins
 
 
@@ -13,18 +13,14 @@ class ProductViewSet(mixins.ActionSerializerMixin, viewsets.ModelViewSet):
     ACTION_SERIALIZERS = {
         'retrieve': serializers.RetrieveProductSerializer,
     }
-    queryset = models.Product.objects.annotate(
-        min_amount=Min('seller_products__amount', filter=Q(seller_products__is_active=True)),
-    )
+    product_services: services.ProductServicesInterface = services.ProductServicesV1()
+    queryset = product_services.get_products()
     serializer_class = serializers.ProductSerializer
-    # permission_classes = (IsMe,)
-
-    # def get_permissions(self):
-    #     if self.action in SAFE_METHODS:
-    #         return AllowAny(),
-    #     return IsMe(),
+    permission_classes = IsAdminOrReadOnly,
 
 
 class ProductImageViewSet(viewsets.ModelViewSet):
-    queryset = models.ProductImage.objects.all()
+    product_image_services: services.ProductImageServicesInterface = services.ProductImageServicesV1()
+    queryset = product_image_services.get_product_images()
     serializer_class = serializers.ProductImageSerializer
+    permission_classes = IsAdminOrReadOnly,
